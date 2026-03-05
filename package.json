@@ -1,0 +1,55 @@
+{
+  "name": "plugin-agentwallet",
+  "version": "1.0.0",
+  "description": "Non-custodial wallet for ElizaOS agents — EVM + Solana, x402 payments, 17-chain CCTP bridge, on-chain spend limits",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "images",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "elizaos",
+    "eliza",
+    "plugin",
+    "wallet",
+    "solana",
+    "evm",
+    "base",
+    "x402",
+    "cctp",
+    "non-custodial",
+    "agent",
+    "payments",
+    "defi",
+    "crypto",
+    "bridge"
+  ],
+  "author": "up2itnow0822",
+  "license": "MIT",
+  "dependencies": {
+    "agentwallet-sdk": "^3.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "agentConfig": {
+    "pluginType": "elizaos:plugin:1.0.0",
+    "pluginParameters": {}
+  },
+  "elizaos": {
+    "actions": ["WALLET_BALANCE", "SEND_PAYMENT", "BRIDGE_USDC", "SWAP_TOKEN", "GET_SPEND_LIMITS"],
+    "providers": ["walletProvider"],
+    "evaluators": []
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agentwallet-sdk/elizaos-plugin"
+  },
+  "homepage": "https://ai-agent-economy.com"
+}
