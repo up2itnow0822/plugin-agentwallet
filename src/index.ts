@@ -22,19 +22,21 @@ const walletBalanceAction: Action = {
   validate: async (runtime: IAgentRuntime) => {
     return !!(runtime.getSetting("AGENT_WALLET_ADDRESS") && runtime.getSetting("AGENT_PRIVATE_KEY"));
   },
-  handler: async (runtime: IAgentRuntime, message: Memory, state: State, _options: any, callback: HandlerCallback) => {
+  handler: async (runtime: IAgentRuntime, message: Memory, state: State, _options: unknown, callback: HandlerCallback) => {
     try {
-      // Dynamic import to avoid bundling issues
-      const { AgentWallet } = await import("agentwallet-sdk");
-      const wallet = new AgentWallet({
+      // Dynamic import to avoid bundling issues; cast to any for SDK v3 API compatibility
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const sdk = await import("agentwallet-sdk") as any;
+      const wallet = sdk.createWallet({
         privateKey: runtime.getSetting("AGENT_PRIVATE_KEY") as string,
         walletAddress: runtime.getSetting("AGENT_WALLET_ADDRESS") as string,
         chainId: parseInt(runtime.getSetting("CHAIN_ID") || "8453"),
       });
       const balance = await wallet.getBalance();
       callback({ text: `Wallet balance: ${JSON.stringify(balance, null, 2)}` });
-    } catch (error: any) {
-      callback({ text: `Error checking balance: ${error.message}` });
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      callback({ text: `Error checking balance: ${msg}` });
     }
   },
   examples: [
@@ -52,7 +54,7 @@ const sendPaymentAction: Action = {
   validate: async (runtime: IAgentRuntime) => {
     return !!(runtime.getSetting("AGENT_WALLET_ADDRESS") && runtime.getSetting("AGENT_PRIVATE_KEY"));
   },
-  handler: async (runtime: IAgentRuntime, message: Memory, state: State, _options: any, callback: HandlerCallback) => {
+  handler: async (runtime: IAgentRuntime, message: Memory, state: State, _options: unknown, callback: HandlerCallback) => {
     callback({ text: "Payment action: Parse recipient and amount from message, then execute via agentwallet-sdk. Spend limits enforced on-chain." });
   },
   examples: [
