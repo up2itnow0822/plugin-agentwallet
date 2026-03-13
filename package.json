@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "typescript": "^5.0.0",
-    "@elizaos/core": "^0.1.0"
+    "@elizaos/core": "^1.7.2"
   },
   "agentConfig": {
     "pluginType": "elizaos:plugin:1.0.0",

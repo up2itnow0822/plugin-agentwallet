@@ -5,13 +5,23 @@ import { Plugin, Action, Provider, IAgentRuntime, Memory, State, HandlerCallback
 // Built on agentwallet-sdk — https://www.npmjs.com/package/agentwallet-sdk
 
 const walletProvider: Provider = {
-  get: async (runtime: IAgentRuntime, message: Memory, state?: State) => {
+  // name is required in elizaos/core v1.x
+  name: "agentWalletProvider",
+  description: "Provides the agent's non-custodial wallet address and configuration status",
+  // state is required (non-optional) in elizaos/core v1.x
+  get: async (runtime: IAgentRuntime, message: Memory, state: State) => {
     const walletAddress = runtime.getSetting("AGENT_WALLET_ADDRESS");
     const privateKey = runtime.getSetting("AGENT_PRIVATE_KEY");
     if (!walletAddress || !privateKey) {
-      return "Agent Wallet: Not configured. Set AGENT_WALLET_ADDRESS and AGENT_PRIVATE_KEY.";
+      return {
+        text: "Agent Wallet: Not configured. Set AGENT_WALLET_ADDRESS and AGENT_PRIVATE_KEY.",
+        values: { configured: false },
+      };
     }
-    return `Agent Wallet: ${walletAddress} (non-custodial, spend limits enforced on-chain)`;
+    return {
+      text: `Agent Wallet: ${walletAddress} (non-custodial, spend limits enforced on-chain)`,
+      values: { configured: true, walletAddress: String(walletAddress) },
+    };
   },
 };
 
@@ -28,9 +38,9 @@ const walletBalanceAction: Action = {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const sdk = await import("agentwallet-sdk") as any;
       const wallet = sdk.createWallet({
-        privateKey: runtime.getSetting("AGENT_PRIVATE_KEY") as string,
-        walletAddress: runtime.getSetting("AGENT_WALLET_ADDRESS") as string,
-        chainId: parseInt(runtime.getSetting("CHAIN_ID") || "8453"),
+        privateKey: String(runtime.getSetting("AGENT_PRIVATE_KEY")),
+        walletAddress: String(runtime.getSetting("AGENT_WALLET_ADDRESS")),
+        chainId: parseInt(String(runtime.getSetting("CHAIN_ID") || "8453")),
       });
       const balance = await wallet.getBalance();
       callback({ text: `Wallet balance: ${JSON.stringify(balance, null, 2)}` });
@@ -41,9 +51,10 @@ const walletBalanceAction: Action = {
   },
   examples: [
     [
-      { user: "user", content: { text: "What is my wallet balance?" } },
-      { user: "agent", content: { text: "Checking your non-custodial wallet balance..." } }
-    ]
+      // elizaos/core v1.x: ActionExample uses 'name' instead of 'user'
+      { name: "user", content: { text: "What is my wallet balance?" } },
+      { name: "agent", content: { text: "Checking your non-custodial wallet balance..." } },
+    ],
   ],
 };
 
@@ -59,9 +70,9 @@ const sendPaymentAction: Action = {
   },
   examples: [
     [
-      { user: "user", content: { text: "Send 10 USDC to 0x..." } },
-      { user: "agent", content: { text: "Sending 10 USDC (within spend limit)..." } }
-    ]
+      { name: "user", content: { text: "Send 10 USDC to 0x..." } },
+      { name: "agent", content: { text: "Sending 10 USDC (within spend limit)..." } },
+    ],
   ],
 };
 
