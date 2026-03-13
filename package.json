@@ -36,8 +36,8 @@
     "agentwallet-sdk": "^5.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "@elizaos/core": "^0.1.0"
+    "@elizaos/core": "^1.7.2",
+    "typescript": "^5.0.0"
   },
   "agentConfig": {
     "pluginType": "elizaos:plugin:1.0.0",

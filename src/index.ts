@@ -1,17 +1,18 @@
-import { Plugin, Action, Provider, IAgentRuntime, Memory, State, HandlerCallback } from "@elizaos/core";
+import { Plugin, Action, Provider, IAgentRuntime, Memory, State, HandlerCallback, ProviderResult } from "@elizaos/core";
 
 // Agent Wallet Plugin for ElizaOS
 // Non-custodial EVM + Solana wallet with x402 payments and CCTP bridge
 // Built on agentwallet-sdk — https://www.npmjs.com/package/agentwallet-sdk
 
 const walletProvider: Provider = {
-  get: async (runtime: IAgentRuntime, message: Memory, state?: State) => {
+  name: "walletProvider",
+  get: async (runtime: IAgentRuntime, message: Memory, state: State): Promise<ProviderResult> => {
     const walletAddress = runtime.getSetting("AGENT_WALLET_ADDRESS");
     const privateKey = runtime.getSetting("AGENT_PRIVATE_KEY");
     if (!walletAddress || !privateKey) {
-      return "Agent Wallet: Not configured. Set AGENT_WALLET_ADDRESS and AGENT_PRIVATE_KEY.";
+      return { text: "Agent Wallet: Not configured. Set AGENT_WALLET_ADDRESS and AGENT_PRIVATE_KEY." };
     }
-    return `Agent Wallet: ${walletAddress} (non-custodial, spend limits enforced on-chain)`;
+    return { text: `Agent Wallet: ${walletAddress} (non-custodial, spend limits enforced on-chain)` };
   },
 };
 
@@ -27,10 +28,12 @@ const walletBalanceAction: Action = {
       // Dynamic import to avoid bundling issues; cast to any for SDK v3 API compatibility
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const sdk = await import("agentwallet-sdk") as any;
+      const chainIdSetting = runtime.getSetting("CHAIN_ID");
+      const chainId = parseInt(String(chainIdSetting ?? "8453"), 10);
       const wallet = sdk.createWallet({
         privateKey: runtime.getSetting("AGENT_PRIVATE_KEY") as string,
         walletAddress: runtime.getSetting("AGENT_WALLET_ADDRESS") as string,
-        chainId: parseInt(runtime.getSetting("CHAIN_ID") || "8453"),
+        chainId,
       });
       const balance = await wallet.getBalance();
       callback({ text: `Wallet balance: ${JSON.stringify(balance, null, 2)}` });
@@ -41,8 +44,8 @@ const walletBalanceAction: Action = {
   },
   examples: [
     [
-      { user: "user", content: { text: "What is my wallet balance?" } },
-      { user: "agent", content: { text: "Checking your non-custodial wallet balance..." } }
+      { name: "user", content: { text: "What is my wallet balance?" } },
+      { name: "agent", content: { text: "Checking your non-custodial wallet balance..." } }
     ]
   ],
 };
@@ -59,8 +62,8 @@ const sendPaymentAction: Action = {
   },
   examples: [
     [
-      { user: "user", content: { text: "Send 10 USDC to 0x..." } },
-      { user: "agent", content: { text: "Sending 10 USDC (within spend limit)..." } }
+      { name: "user", content: { text: "Send 10 USDC to 0x..." } },
+      { name: "agent", content: { text: "Sending 10 USDC (within spend limit)..." } }
     ]
   ],
 };
