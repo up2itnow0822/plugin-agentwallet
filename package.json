@@ -33,7 +33,7 @@
   "author": "up2itnow0822",
   "license": "MIT",
   "dependencies": {
-    "agentwallet-sdk": "^5.0.0"
+    "agentwallet-sdk": "^5.1.1"
   },
   "devDependencies": {
     "@elizaos/core": "^1.7.2",
