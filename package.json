@@ -1,7 +1,7 @@
 {
   "name": "plugin-agentwallet",
   "version": "1.0.0",
-  "description": "Non-custodial wallet for ElizaOS agents — EVM + Solana, x402 payments, 17-chain CCTP bridge, on-chain spend limits",
+  "description": "Non-custodial wallet for ElizaOS agents \u2014 EVM + Solana, x402 payments, 17-chain CCTP bridge, on-chain spend limits",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -11,7 +11,8 @@
   ],
   "scripts": {
     "build": "tsc",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "lint": "eslint src/"
   },
   "keywords": [
     "elizaos",
@@ -37,6 +38,10 @@
   },
   "devDependencies": {
     "@elizaos/core": "^1.7.2",
+    "@typescript-eslint/eslint-plugin": "^8.57.1",
+    "@typescript-eslint/parser": "^8.57.1",
+    "eslint": "^10.1.0",
+    "globals": "^17.4.0",
     "typescript": "^5.0.0"
   },
   "agentConfig": {
