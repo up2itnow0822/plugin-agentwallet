@@ -44,6 +44,10 @@
     "globals": "^17.4.0",
     "typescript": "^6.0.2"
   },
+  "overrides": {
+    "ws": "^8.21.3",
+    "langsmith": "^0.6.1"
+  },
   "agentConfig": {
     "pluginType": "elizaos:plugin:1.0.0",
     "pluginParameters": {}
