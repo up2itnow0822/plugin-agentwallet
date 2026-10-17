@@ -1,3 +1,6 @@
+> [!WARNING]
+> **Paused for security maintenance. Do not use in production.**
+
 # 🤖 Agent Wallet SDK
 
 **Let your AI agent spend crypto. Stay in control.**
